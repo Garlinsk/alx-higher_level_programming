@@ -8,4 +8,4 @@ def print_last_digit(number):
     if exe == 1:
         number *= -1
     print("{:d}".format(last), end="")
-    return 
+    return last 
