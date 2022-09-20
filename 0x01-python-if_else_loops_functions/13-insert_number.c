@@ -1,54 +1,54 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include "lists.h"
 
 /**
- * insert_node - Inserts a number into a list
- * @head: The start of the sorted, singly linked list
- * @number: The number to add to the list
+ * insert_node - Inserts a number into a sorted singly linked list.
  *
- * Return: The address of the new node or NULL
+ * @head: Double pointer to a singly linked list
+ *
+ * @number: Value of the new node.
+ * Return: The address of the new node, or NULL if it failed.
  */
+
 listint_t *insert_node(listint_t **head, int number)
 {
-	listint_t *new, *prev, *current = *head;
+	int flag = 0;
+	listint_t *new_node = NULL, *actual = NULL, *after = NULL;
 
-	new = malloc(sizeof(listint_t));
-	if (new == NULL)
+	if (head == NULL)
 		return (NULL);
-
-	new->n = number;
-	new->next = NULL;
+	new_node = malloc(sizeof(listint_t));
+	if (!new_node)
+		return (NULL);
+	new_node->n = number, new_node->next = NULL;
 	if (*head == NULL)
-		*head = new;
-	else if (current->next == NULL)
 	{
-		if (current->n > number)
-		{
-			new->next = current;
-			*head = new;
-		}
-		else
-			current->next = new;
+		*head = new_node;
+		return (*head);
 	}
-	else
+	actual = *head;
+	if (number <= actual->n)
 	{
-		while (current->next && current->n < number)
-		{
-			prev = current;
-			current = current->next;
-		}
-		if (current->n < number)
-		{
-			new->next = current->next;
-			current->next = new;
-		}
-		else
-		{
-			prev->next = new;
-			new->next = current;
-		}
+		new_node->next = actual, *head = new_node;
+		return (*head);
 	}
-
-	return (new);
+	if (number > actual->n && !actual->next)
+	{
+		actual->next = new_node;
+		return (new_node);
+	}
+	after = actual->next;
+	while (actual)
+	{
+		if (!after)
+			actual->next = new_node, flag = 1;
+		else if (after->n == number)
+			actual->next = new_node, new_node->next = after, flag = 1;
+		else if (after->n > number && actual->n < number)
+			actual->next = new_node, new_node->next = after, flag = 1;
+		if (flag)
+			break;
+		after = after->next, actual = actual->next;
+	}
+	return (new_node);
 }
